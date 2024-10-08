@@ -33,6 +33,27 @@ class Node:
 
 #----------------------------------------------------------------------
 
+def graph_search(initial_node, goal_state):
+    explored_nodes = set()
+    frontier = Queue()
+    frontier.insert(initial_node)
+
+    while frontier:
+        current_node = frontier.remove()
+
+        if current_node.__eq__(Node(goal_state)):
+            return current_node
+
+        explored_nodes.add(current_node.state)
+
+        for child_node in current_node.expand():
+            if child_node.state not in [n.state for n in frontier] and child_node.state not in explored_nodes:
+                frontier.append(child_node)
+
+    return None
+
+    
+#------------------------------------------------------------
 def uninformed_search(initial_state, goal_state, frontier):
 
     """
@@ -44,6 +65,7 @@ def uninformed_search(initial_state, goal_state, frontier):
     """
 
     initial_node = Node(initial_state, None, None)
+    graph_search(initial_node)
     expanded = 0
     generated = 0
     
@@ -76,7 +98,7 @@ def uniform_cost(initial_state, goal_state):
 
 #----------------------------------------------------------------------
 
-def informed_search(initial_state, goal_state, frontier, heuristic):
+def informed_search(initial_state, goal_state, frontier: Queue, heuristic):
 
     """
     Parametros:
@@ -90,11 +112,27 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
     """
 
     initial_node = Node(initial_state, None, None)
+    frontier.insert(initial_node)
     expanded = 0
     generated = 0
     
+    while frontier:
+        current_node: Node = frontier.remove()
+        
+        if current_node.__eq__(Node(goal_state)):
+            return current_node
+        
+        expanded += 1
+        
+        for child_node in current_node.expand():
+            if not frontier.contains(child_node.state):
+                generated += 1
+                child_node.g = current_node.g + 1
+                child_node.h = heuristic(child_node.state, goal_state)
+                frontier.insert(child_node)
+    
     """
-    Rellenar con el codigo necesario para realizar una busqueda no informada
+    Rellenar con el codigo necesario para realizar una busqueda informada
     siguiendo el pseudocodigo de los apuntes (Graph-Search), modificada para
     actualizar el valor heuristico (h) de los nodos
     La funcion debe devolver una tupla con 3 variables:

@@ -1,5 +1,6 @@
-from Tkinter import *
-import tkMessageBox
+from tkinter import *
+from tkinter import messagebox
+
 
 LEFT = 'left'
 RIGHT = 'right'
@@ -85,19 +86,19 @@ class MissionariesWorld:
 		
 		# FORMAT ERRORS
 		if direction == '>' and self.boat_position == RIGHT:
-			tkMessageBox.showerror("Error", "Incorrect direction (>)")
+			messagebox.showerror("Error", "Incorrect direction (>)")
 			return
 		if direction == '<' and self.boat_position == LEFT:
-			tkMessageBox.showerror("Error", "Incorrect direction (<)")
+			messagebox.showerror("Error", "Incorrect direction (<)")
 			return
 		if cann_in_boat + miss_in_boat > self.boat_capacity:
-			tkMessageBox.showerror("Error", "Boat capacity exceeded")
+			messagebox.showerror("Error", "Boat capacity exceeded")
 			return
 		if miss_in_boat > self.missionaries[origin]:
-			tkMessageBox.showerror("Error", "Not enough missionaries")
+			messagebox.showerror("Error", "Not enough missionaries")
 			return
 		if cann_in_boat > self.cannibals[origin]:
-			tkMessageBox.showerror("Error", "Not enough cannibals")
+			messagebox.showerror("Error", "Not enough cannibals")
 			return
 		
 		# ORIGIN SHORE UPDATE
@@ -116,7 +117,7 @@ class MissionariesWorld:
 		if miss_in_boat > 0 and cann_in_boat > miss_in_boat:
 			self.b_next.config(state=DISABLED)
 			self.canvas.update()
-			tkMessageBox.showerror("Error", "There are more cannibals in the boat")
+			messagebox.showerror("Error", "There are more cannibals in the boat")
 			return
 		
 		self.canvas.after(200)
@@ -146,24 +147,24 @@ class MissionariesWorld:
 		if self.missionaries[0] > 0 and self.cannibals[0] > self.missionaries[0]:
 			self.b_next.config(state=DISABLED)
 			self.draw()
-			tkMessageBox.showerror("GAME OVER!", "There are more cannibals in the left shore! :(")
+			messagebox.showerror("GAME OVER!", "There are more cannibals in the left shore! :(")
 			return
 		if self.missionaries[1] > 0 and self.cannibals[1] > self.missionaries[1]:
 			self.b_next.config(state=DISABLED)
 			self.draw()
-			tkMessageBox.showerror("GAME OVER!", "There are more cannibals in the right shore! :(")
+			messagebox.showerror("GAME OVER!", "There are more cannibals in the right shore! :(")
 			return
 		
 		# FINISH CONDITIONS (GOAL ACHIEVED vs GOAL NOT ACHIEVED)
 		if self.missionaries == self.final_miss and self.cannibals == self.final_cann and self.boat_position == self.final_pos:
 			self.b_next.config(state=DISABLED)
 			self.draw()
-			tkMessageBox.showinfo("Finished!", "Goal achieved! :)")
+			messagebox.showinfo("Finished!", "Goal achieved! :)")
 			return
 		elif len(self.steps) == 0:
 			self.b_next.config(state=DISABLED)
 			self.draw()
-			tkMessageBox.showwarning("Finished", "No steps left")
+			messagebox.showwarning("Finished", "No steps left")
 			return
 		
 		self.b_next.config(state=NORMAL)
