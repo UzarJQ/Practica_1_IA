@@ -91,9 +91,9 @@ class MissionariesState:
             for cannibal in range(self.capacity + 1 - misionary):
                 if misionary + cannibal > 0:  # Al menos debe haber una persona en el bote
                     if self.boat_position == "left":
-                        action = f">{m}{c}"  # Mover hacia la derecha
+                        action = f">{misionary}{cannibal}"  # Mover hacia la derecha
                     else:
-                        action = f"<{m}{c}"  # Mover hacia la izquierda
+                        action = f"<{misionary}{cannibal}"  # Mover hacia la izquierda
                     possible_actions.append(action)
     
     # Probar cada acción y verificar si genera un estado válido

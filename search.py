@@ -63,12 +63,31 @@ def uninformed_search(initial_state, goal_state, frontier):
     frontier: estructura de datos para contener los estados de la frontera (objeto de clase
     contenida en el modulo DataStructures)
     """
+    explored_nodes = set()  # Almacena los nodos ya explorados
+    frontier = Queue()  # Usa la clase Queue como cola FIFO
+    frontier.insert(initial_node)  # Inserta el nodo inicial
 
     initial_node = Node(initial_state, None, None)
     graph_search(initial_node)
     expanded = 0
     generated = 0
     
+    while not frontier.is_empty():  # Mientras la frontera no esté vacía
+        current_node = frontier.remove()  # Extrae el primer nodo de la cola
+        expanded += 1  # Expande el nodo actual
+
+        if current_node.state == goal_state:  # Si encontramos el estado objetivo
+            return (current_node, expanded, generated)  # Retorna el nodo, nodos expandidos y generados
+
+        explored_nodes.add(current_node.state)  # Marca el nodo como explorado
+
+        # Expande los nodos hijos y los añade a la frontera
+        for child_node in current_node.expand():
+            if child_node.state not in explored_nodes and not frontier.contains(child_node):
+                frontier.insert(child_node)  # Añade a la frontera los nodos no explorados
+                generated += 1  # Incrementa el contador de nodos generados
+
+    """ return None  # Si no se encuentra el objetivo, retorna None"""
     """
     Rellenar con el codigo necesario para realizar una busqueda no informada
     siguiendo el pseudocodigo de los apuntes (Graph-Search)
