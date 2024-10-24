@@ -13,10 +13,11 @@ class Node:
   the start node to this node, and the estimated path cost h
   from this node to the goal node.
   """
-  def __init__(self, state, parent, action):
+  def __init__(self, state, parent, action, cost=0):
     self.state = state
     self.parent = parent
     self.action = action
+    self.cost = cost
     self.g = 0
     self.h = 0
 
@@ -92,14 +93,58 @@ def uninformed_search(initial_state, goal_state, frontier):
 
 def breadth_first(initial_state, goal_state):
   frontier = Queue() # Indicar estructura de datos adecuada para breadth_first
-  return uninformed_search(initial_state, goal_state, frontier)
+  
+  """Codigo para realizar busqueda en anchura"""
+  initial_node = Node(initial_state, None, None)
+  expanded = 0
+  generated = 0
+  explored_nodes = Queue()
+  
+  frontier.insert(initial_node)
+  
+  while frontier.contents:
+    leaf_node: Node = frontier.remove()
+    
+    if leaf_node:
+      if leaf_node.state.__eq__(goal_state):
+        return (leaf_node, expanded, generated)
+      
+    explored_nodes.insert(leaf_node)
+    
+    expanded += 1
+    for succesor in leaf_node.expand():
+      generated += 1
+      founded = False
+      
+      if explored_nodes.is_empty() and frontier.is_empty():
+        frontier.insert(succesor)
+      else:
+        for explored in explored_nodes.contents:
+          if(succesor.state.__eq__(explored.state)):
+            founded = True
+            break
+        
+        if not founded:
+          for leaf in frontier.contents:
+            if(succesor.state.__eq__(leaf.state)):
+              founded = True
+              break
+          
+        if not founded:
+          frontier.insert(succesor)
+  return (None, expanded, generated)
 
 def depth_first(initial_state, goal_state):
   frontier = None # Indicar estructura de datos adecuada para depth_first
   return uninformed_search(initial_state, goal_state, frontier)
 
 def uniform_cost(initial_state, goal_state):
-  frontier = None # Indicar estructura de datos adecuada para uniform_cost
+  frontier = Queue() # Indicar estructura de datos adecuada para uniform_cost
+  """Codigo para realizar busqueda de coste uniforme"""
+  initial_node = Node(initial_state, None, None)
+  expanded = 0
+  generated = 0
+  explored_nodes = Queue()
   return uninformed_search(initial_state, goal_state, frontier)
 
 #----------------------------------------------------------------------
