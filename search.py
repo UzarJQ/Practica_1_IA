@@ -64,6 +64,7 @@ def uninformed_search(initial_state, goal_state, frontier):
         return (leaf_node, expanded, generated)
       
     explored_nodes.insert(leaf_node)
+
     
     expanded += 1
     for succesor in leaf_node.expand():
