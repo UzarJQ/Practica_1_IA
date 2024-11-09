@@ -13,13 +13,12 @@ class Node:
   the start node to this node, and the estimated path cost h
   from this node to the goal node.
   """
-  def __init__(self, state, parent, action, cost=0):
+  def __init__(self, state, parent, action, g=0, h=0):
     self.state = state
     self.parent = parent
     self.action = action
-    self.cost = cost
-    self.g = 0
-    self.h = 0
+    self.g = g
+    self.h = h
 
   def __eq__(self, other):
     if other:
@@ -33,6 +32,9 @@ class Node:
       newNode = Node(newState, self, action)
       successors.append(newNode)
     return successors
+  
+  def get_cost(self):
+    return self.g + self.h
 
 #------------------------------------------------------------
 def uninformed_search(initial_state, goal_state, frontier):
@@ -93,60 +95,45 @@ def uninformed_search(initial_state, goal_state, frontier):
 
 def breadth_first(initial_state, goal_state):
   frontier = Queue() # Indicar estructura de datos adecuada para breadth_first
-  
-  """Codigo para realizar busqueda en anchura"""
+  return uninformed_search(initial_state, goal_state, frontier)
+
+def depth_first(initial_state, goal_state):
+  frontier = Queue() # Indicar estructura de datos adecuada para depth_first
+  return uninformed_search(initial_state, goal_state, frontier)
+
+def uniform_cost(initial_state, goal_state):
+  frontier = PriorityQueue(lambda node: node.g) # Use the path cost g for priority
   initial_node = Node(initial_state, None, None)
+  
   expanded = 0
   generated = 0
-  explored_nodes = Queue()
   
   frontier.insert(initial_node)
   
-  while frontier.contents:
+  explored_nodes = Queue()
+  while not frontier.is_empty():
     leaf_node: Node = frontier.remove()
     
-    if leaf_node:
-      if leaf_node.state.__eq__(goal_state):
-        return (leaf_node, expanded, generated)
-      
-    explored_nodes.insert(leaf_node)
+    if leaf_node.state.__eq__(goal_state):
+      return (leaf_node, expanded, generated)
     
     expanded += 1
     for succesor in leaf_node.expand():
       generated += 1
-      founded = False
+      succesor.g = leaf_node.g + 1
       
-      if explored_nodes.is_empty() and frontier.is_empty():
+      if succesor.state.__eq__(goal_state):
+        return (succesor, expanded, generated)
+      
+      if not explored_nodes.contains(succesor) and not frontier.contains(succesor):
+        explored_nodes.insert(leaf_node)
         frontier.insert(succesor)
       else:
-        for explored in explored_nodes.contents:
-          if(succesor.state.__eq__(explored.state)):
-            founded = True
-            break
-        
-        if not founded:
-          for leaf in frontier.contents:
-            if(succesor.state.__eq__(leaf.state)):
-              founded = True
-              break
-          
-        if not founded:
-          frontier.insert(succesor)
+        for i, node in enumerate(frontier.contents):
+            if node and node.__eq__(succesor) and node.g > succesor.g:
+                frontier.contents[i] = succesor
+                break
   return (None, expanded, generated)
-
-def depth_first(initial_state, goal_state):
-  frontier = None # Indicar estructura de datos adecuada para depth_first
-  return uninformed_search(initial_state, goal_state, frontier)
-
-def uniform_cost(initial_state, goal_state):
-  frontier = Queue() # Indicar estructura de datos adecuada para uniform_cost
-  """Codigo para realizar busqueda de coste uniforme"""
-  initial_node = Node(initial_state, None, None)
-  expanded = 0
-  generated = 0
-  explored_nodes = Queue()
-  return uninformed_search(initial_state, goal_state, frontier)
-
 #----------------------------------------------------------------------
 
 def informed_search(initial_state, goal_state, frontier, heuristic):
@@ -197,7 +184,7 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
 # Test functions for informed search
 
 def greedy(initial_state, goal_state, heuristic):
-  frontier = PriorityQueue # Indicar estructura de datos adecuada para greedy
+  frontier = PriorityQueue(lambda x : x) # Indicar estructura de datos adecuada para greedy
   return informed_search(initial_state, goal_state, frontier, heuristic)
 
 def a_star(initial_state, goal_state, heuristic):
@@ -212,10 +199,9 @@ def h1(current_state, goal_state):
   remaining = current_state.miss[0] + current_state.cann[0]
   return (remaining + 1) // current_state.capacity
 
+# Heuristica basada en que al haber mas misioneros del lado derecho, se necesitaran menos movimientos
 def h2(current_state, goal_state):
-  dx = current_state.x - goal_state.x
-  dy = current_state.y - goal_state.y
-  return math.sqrt(dx * dx + dy * dy)
+  return goal_state.miss[1] - current_state.miss[1]
 
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
