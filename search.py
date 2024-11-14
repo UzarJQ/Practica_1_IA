@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from datastructures import *
-import math
 
 #----------------------------------------------------------------------
 
@@ -54,7 +53,7 @@ def uninformed_search(initial_state, goal_state, frontier):
   initial_node = Node(initial_state, None, None)
   expanded = 0
   generated = 0
-  explored_nodes = Queue()
+  explored_nodes = type(frontier)()
   
   frontier.insert(initial_node)
   
@@ -102,7 +101,7 @@ def depth_first(initial_state, goal_state):
   return uninformed_search(initial_state, goal_state, frontier)
 
 def uniform_cost(initial_state, goal_state):
-  frontier = PriorityQueue(lambda node: node.g) # Use the path cost g for priority
+  frontier = PriorityQueue(lambda node: node)
   initial_node = Node(initial_state, None, None)
   
   expanded = 0
@@ -153,16 +152,16 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
   expanded = 0
   generated = 0
   
-  while frontier:
+  while not frontier.is_empty():
     current_node = frontier.remove()
     
-    if current_node.__eq__(Node(goal_state)):
+    if current_node.state.__eq__(goal_state):
       return current_node
     
     expanded += 1
     
     for child_node in current_node.expand():
-      if not frontier.contains(child_node.state): 
+      if not frontier.contains(child_node): 
         generated += 1
         child_node.g = current_node.g + 1
         child_node.h = heuristic(child_node.state, goal_state)
@@ -178,6 +177,7 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
     3. Numero de nodos generados (generated)
   """
   
+  
   return (None, expanded, generated)
   
 #----------------------------------------------------------------------
@@ -188,7 +188,7 @@ def greedy(initial_state, goal_state, heuristic):
   return informed_search(initial_state, goal_state, frontier, heuristic)
 
 def a_star(initial_state, goal_state, heuristic):
-  frontier = PriorityQueue # Indicar estructura de datos adecuada para A*
+  frontier = PriorityQueue(lambda x : x) # Indicar estructura de datos adecuada para A*
   return informed_search(initial_state, goal_state, frontier, heuristic) 
 
 #---------------------------------------------------------------------
@@ -196,13 +196,8 @@ def a_star(initial_state, goal_state, heuristic):
 
 # Heuristica basada en el numero de viajes necesarios para llevar a todos los personajes al otro lado del rio
 def h1(current_state, goal_state):
-  remaining = current_state.miss[0] + current_state.cann[0]
-  return (remaining + 1) // current_state.capacity
-
-# Heuristica basada en que al haber mas misioneros del lado derecho, se necesitaran menos movimientos
-def h2(current_state, goal_state):
-  return goal_state.miss[1] - current_state.miss[1]
-
+  remaining = goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1]
+  return remaining / current_state.capacity
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
   path = []
