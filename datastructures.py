@@ -94,7 +94,7 @@ class PriorityQueue:
         # the elements themselves (position 0 is not used)
         self.contents = [None] * (self.limit + 1)
         # a function that returns the cost of the element at position i
-        self.cost = lambda i: costFunction(self.contents[i])
+        self.cost = lambda i: costFunction(self.contents[i].g)
         
     def contains(self, elem):
         return elem in self.contents
@@ -113,7 +113,7 @@ class PriorityQueue:
 
     def parent(self, i):
         # returns the position of the parent of element i
-        return i / 2
+        return i // 2 
 
     def left(self, i):
         # returns the position of the left child of element i
