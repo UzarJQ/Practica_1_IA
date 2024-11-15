@@ -109,26 +109,32 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
     funcion recibe dos parametros (estado actual y estado objetivo) y devuelve
     una estimacion de coste entre ambos estados
   """
-
-  initial_node = Node(initial_state, None, None)
-  frontier.insert(initial_node)
+  explored_nodes = Queue()
   expanded = 0
   generated = 0
+  initial_node = Node(initial_state, None, None)
+  
+  frontier.insert(initial_node)
   
   while not frontier.is_empty():
-    current_node = frontier.remove()
+    actual_node = frontier.remove()
+    explored_nodes.insert(actual_node)
     
-    if current_node.state.__eq__(goal_state):
-      return current_node
+    if actual_node.state.__eq__(goal_state):
+      return actual_node
     
     expanded += 1
-    
-    for child_node in current_node.expand():
-      if not frontier.contains(child_node): 
-        generated += 1
-        child_node.g = current_node.g + 1
-        child_node.h = heuristic(child_node.state, goal_state)
-        frontier.insert(child_node)
+    for succesor in actual_node.expand():
+      generated += 1
+      succesor.g = actual_node.g + 1
+      succesor.h = heuristic(succesor.state, goal_state)
+      
+      if succesor.state.__eq__(goal_state):
+        return (succesor, expanded, generated)
+      
+      
+      if not frontier.contains(succesor) and not explored_nodes.contains(succesor):
+        frontier.insert(succesor)
   
   """
   Rellenar con el codigo necesario para realizar una busqueda informada
@@ -157,10 +163,15 @@ def a_star(initial_state, goal_state, heuristic):
 #---------------------------------------------------------------------
 # Heuristic functions
 
-# Heuristica basada en el numero de viajes necesarios para llevar a todos los personajes al otro lado del rio
+# Heuristica basada en el numero de personajes que falta por llevar al otro lado del rio
 def h1(current_state, goal_state):
-  remaining = goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1]
-  return remaining / current_state.capacity
+  remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
+  return remaining
+
+def h2(current_state, goal_state):
+  
+  return 0
+
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
   path = []
