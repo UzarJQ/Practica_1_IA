@@ -103,12 +103,18 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
   Parametros:
   initial_state: estado inicial de busqueda (objeto de clase MissionariesState)
   goal_state: estado inicial de busqueda (objeto de clase MissionariesState)
-  frontier: estructura de datos para contener los estados de la frontera (objeto de clase
-    contenida en el modulo DataStructures)
-  heuristic: funcion heuristica utilizada para guiar el proceso de busqueda. La
-    funcion recibe dos parametros (estado actual y estado objetivo) y devuelve
-    una estimacion de coste entre ambos estados
+  frontier: estructura de datos para contener los estados de la frontera (objeto de clase contenida en el modulo DataStructures)
+  heuristic: funcion heuristica utilizada para guiar el proceso de busqueda. Lafuncion recibe dos parametros (estado actual y estado objetivo) y devuelve una estimacion de coste entre ambos estados
   """
+  
+  """
+  Rellenar con el codigo necesario para realizar una busqueda informada siguiendo el pseudocodigo de los apuntes (Graph-Search), modificada para actualizar el valor heuristico (h) de los nodos
+  La funcion debe devolver una tupla con 3 variables:
+    1. Nodo del grafo con el estado objetivo (None si no se ha alcanzado el objetivo)
+    2. Numero de nodos expandidos (expanded)
+    3. Numero de nodos generados (generated)
+  """
+  
   explored_nodes = Queue()
   expanded = 0
   generated = 0
@@ -135,18 +141,6 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
       
       if not frontier.contains(succesor) and not explored_nodes.contains(succesor):
         frontier.insert(succesor)
-  
-  """
-  Rellenar con el codigo necesario para realizar una busqueda informada
-  siguiendo el pseudocodigo de los apuntes (Graph-Search), modificada para
-  actualizar el valor heuristico (h) de los nodos
-  La funcion debe devolver una tupla con 3 variables:
-    1. Nodo del grafo con el estado objetivo (None si no se ha alcanzado el objetivo)
-    2. Numero de nodos expandidos (expanded)
-    3. Numero de nodos generados (generated)
-  """
-  
-  
   return (None, expanded, generated)
   
 #----------------------------------------------------------------------
@@ -168,9 +162,10 @@ def h1(current_state, goal_state):
   remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
   return remaining
 
+# Heuristica basada en el numero de misioneros que falta por llevar al otro lado del rio
 def h2(current_state, goal_state):
-  
-  return 0
+  remaining_misionaries = abs(goal_state.miss[1] - current_state.miss[1])
+  return remaining_misionaries
 
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
