@@ -23,7 +23,7 @@ class Stack:
             return self.contents.pop(0)
 
     def insert(self, new):
-        self.contents.insert(0, new)
+        self.contents.insert(0,new)
         
     def contains(self, elem):
         return elem in self.contents

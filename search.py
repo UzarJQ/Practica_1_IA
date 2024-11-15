@@ -50,43 +50,36 @@ def uninformed_search(initial_state, goal_state, frontier):
     2. Numero de nodos expandidos (expanded)
     3. Numero de nodos generados (generated)
   """
-  initial_node = Node(initial_state, None, None)
+  explored_nodes = Queue()
   expanded = 0
   generated = 0
-  explored_nodes = type(frontier)()
-  
+  initial_node = Node(initial_state, None, None)
+
   frontier.insert(initial_node)
   
-  while frontier.contents:
-    leaf_node: Node = frontier.remove()
+  while not frontier.is_empty():
+    actual_node = frontier.remove()
+    explored_nodes.insert(actual_node)
     
-    if leaf_node:
-      if leaf_node.state.__eq__(goal_state):
-        return (leaf_node, expanded, generated)
-      
-    explored_nodes.insert(leaf_node)
+    if actual_node.state.__eq__(goal_state):
+      return (actual_node, expanded, generated)
     
     expanded += 1
-    for succesor in leaf_node.expand():
+    for succesor in actual_node.expand():
       generated += 1
-      founded = False
+      succesor.g = actual_node.g + 1
       
-      if explored_nodes.is_empty() and frontier.is_empty():
+      if succesor.state.__eq__(goal_state):
+          return (succesor, expanded, generated)
+      
+      if not frontier.contains(succesor) and not explored_nodes.contains(succesor):
         frontier.insert(succesor)
       else:
-        for explored in explored_nodes.contents:
-          if(succesor.state.__eq__(explored.state)):
-            founded = True
-            break
-        
-        if not founded:
-          for leaf in frontier.contents:
-            if(succesor.state.__eq__(leaf.state)):
-              founded = True
-              break
-          
-        if not founded:
-          frontier.insert(succesor)
+        if type(frontier) == PriorityQueue:
+          for i, node in enumerate(frontier.contents):
+            if node and node.__eq__(succesor) and node.g > succesor.g:
+                frontier.contents[i] = succesor
+                break
   return (None, expanded, generated)
   
 #----------------------------------------------------------------------
@@ -97,42 +90,12 @@ def breadth_first(initial_state, goal_state):
   return uninformed_search(initial_state, goal_state, frontier)
 
 def depth_first(initial_state, goal_state):
-  frontier = Queue() # Indicar estructura de datos adecuada para depth_first
+  frontier = Stack() # Indicar estructura de datos adecuada para depth_first
   return uninformed_search(initial_state, goal_state, frontier)
 
 def uniform_cost(initial_state, goal_state):
   frontier = PriorityQueue(lambda node: node)
-  initial_node = Node(initial_state, None, None)
-  
-  expanded = 0
-  generated = 0
-  
-  frontier.insert(initial_node)
-  
-  explored_nodes = Queue()
-  while not frontier.is_empty():
-    leaf_node: Node = frontier.remove()
-    
-    if leaf_node.state.__eq__(goal_state):
-      return (leaf_node, expanded, generated)
-    
-    expanded += 1
-    for succesor in leaf_node.expand():
-      generated += 1
-      succesor.g = leaf_node.g + 1
-      
-      if succesor.state.__eq__(goal_state):
-        return (succesor, expanded, generated)
-      
-      if not explored_nodes.contains(succesor) and not frontier.contains(succesor):
-        explored_nodes.insert(leaf_node)
-        frontier.insert(succesor)
-      else:
-        for i, node in enumerate(frontier.contents):
-            if node and node.__eq__(succesor) and node.g > succesor.g:
-                frontier.contents[i] = succesor
-                break
-  return (None, expanded, generated)
+  return uninformed_search(initial_state, goal_state, frontier)
 #----------------------------------------------------------------------
 
 def informed_search(initial_state, goal_state, frontier, heuristic):
