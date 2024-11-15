@@ -35,7 +35,7 @@ show_solution(solution_uc, expanded, generated)
 #------------------------------------------------------------
 
 # greedy Search algorithm
-solution_greedy, expanded, generated = greedy(init_state, goal_state, h1)
+solution_greedy, expanded, generated = greedy(init_state, goal_state, h2)
 if solution_greedy != None:
     print ("greedy found a solution...")
 else:

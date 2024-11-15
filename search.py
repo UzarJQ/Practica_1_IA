@@ -103,44 +103,44 @@ def informed_search(initial_state, goal_state, frontier, heuristic):
   Parametros:
   initial_state: estado inicial de busqueda (objeto de clase MissionariesState)
   goal_state: estado inicial de busqueda (objeto de clase MissionariesState)
-  frontier: estructura de datos para contener los estados de la frontera (objeto de clase
-    contenida en el modulo DataStructures)
-  heuristic: funcion heuristica utilizada para guiar el proceso de busqueda. La
-    funcion recibe dos parametros (estado actual y estado objetivo) y devuelve
-    una estimacion de coste entre ambos estados
+  frontier: estructura de datos para contener los estados de la frontera (objeto de clase contenida en el modulo DataStructures)
+  heuristic: funcion heuristica utilizada para guiar el proceso de busqueda. Lafuncion recibe dos parametros (estado actual y estado objetivo) y devuelve una estimacion de coste entre ambos estados
   """
-
-  initial_node = Node(initial_state, None, None)
-  frontier.insert(initial_node)
-  expanded = 0
-  generated = 0
-  
-  while not frontier.is_empty():
-    current_node = frontier.remove()
-    
-    if current_node.state.__eq__(goal_state):
-      return current_node
-    
-    expanded += 1
-    
-    for child_node in current_node.expand():
-      if not frontier.contains(child_node): 
-        generated += 1
-        child_node.g = current_node.g + 1
-        child_node.h = heuristic(child_node.state, goal_state)
-        frontier.insert(child_node)
   
   """
-  Rellenar con el codigo necesario para realizar una busqueda informada
-  siguiendo el pseudocodigo de los apuntes (Graph-Search), modificada para
-  actualizar el valor heuristico (h) de los nodos
+  Rellenar con el codigo necesario para realizar una busqueda informada siguiendo el pseudocodigo de los apuntes (Graph-Search), modificada para actualizar el valor heuristico (h) de los nodos
   La funcion debe devolver una tupla con 3 variables:
     1. Nodo del grafo con el estado objetivo (None si no se ha alcanzado el objetivo)
     2. Numero de nodos expandidos (expanded)
     3. Numero de nodos generados (generated)
   """
   
+  explored_nodes = Queue()
+  expanded = 0
+  generated = 0
+  initial_node = Node(initial_state, None, None)
   
+  frontier.insert(initial_node)
+  
+  while not frontier.is_empty():
+    actual_node = frontier.remove()
+    explored_nodes.insert(actual_node)
+    
+    if actual_node.state.__eq__(goal_state):
+      return actual_node
+    
+    expanded += 1
+    for succesor in actual_node.expand():
+      generated += 1
+      succesor.g = actual_node.g + 1
+      succesor.h = heuristic(succesor.state, goal_state)
+      
+      if succesor.state.__eq__(goal_state):
+        return (succesor, expanded, generated)
+      
+      
+      if not frontier.contains(succesor) and not explored_nodes.contains(succesor):
+        frontier.insert(succesor)
   return (None, expanded, generated)
   
 #----------------------------------------------------------------------
@@ -157,10 +157,16 @@ def a_star(initial_state, goal_state, heuristic):
 #---------------------------------------------------------------------
 # Heuristic functions
 
-# Heuristica basada en el numero de viajes necesarios para llevar a todos los personajes al otro lado del rio
+# Heuristica basada en el numero de personajes que falta por llevar al otro lado del rio
 def h1(current_state, goal_state):
-  remaining = goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1]
-  return remaining / current_state.capacity
+  remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
+  return remaining
+
+# Heuristica basada en el numero de misioneros que falta por llevar al otro lado del rio
+def h2(current_state, goal_state):
+  remaining_misionaries = abs(goal_state.miss[1] - current_state.miss[1])
+  return remaining_misionaries
+
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
   path = []
