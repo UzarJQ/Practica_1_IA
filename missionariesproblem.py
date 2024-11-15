@@ -16,39 +16,39 @@ else:
     print ("breadth_first failed...")
 show_solution(solution_bf, expanded, generated)
 
-# # Depth First Search algorithm
-# solution_df, expanded, generated = depth_first(init_state, goal_state)
-# if solution_df != None:
-#     print ("depth_first found a solution...")
-# else:
-#     print ("depth_first failed...")
-# show_solution(solution_df, expanded, generated)
+# Depth First Search algorithm
+solution_df, expanded, generated = depth_first(init_state, goal_state)
+if solution_df != None:
+    print ("depth_first found a solution...")
+else:
+    print ("depth_first failed...")
+show_solution(solution_df, expanded, generated)
 
-# # Uniform Cost Search algorithm
-# solution_uc, expanded, generated = uniform_cost(init_state, goal_state)
-# if solution_uc != None:
-#     print ("uniform_cost found a solution...")
-# else:
-#     print ("uniform_cost failed...")
-# show_solution(solution_uc, expanded, generated)
+# Uniform Cost Search algorithm
+solution_uc, expanded, generated = uniform_cost(init_state, goal_state)
+if solution_uc != None:
+    print ("uniform_cost found a solution...")
+else:
+    print ("uniform_cost failed...")
+show_solution(solution_uc, expanded, generated)
 
-# #------------------------------------------------------------
+#------------------------------------------------------------
 
-# # greedy Search algorithm
-# solution_greedy, expanded, generated = greedy(init_state, goal_state, h1)
-# if solution_greedy != None:
-#     print ("greedy found a solution...")
-# else:
-#     print ("greedy failed...")
-# show_solution(solution_greedy, expanded, generated)
+# greedy Search algorithm
+solution_greedy, expanded, generated = greedy(init_state, goal_state, h2)
+if solution_greedy != None:
+    print ("greedy found a solution...")
+else:
+    print ("greedy failed...")
+show_solution(solution_greedy, expanded, generated)
 
-# # A* Search algorithm
-# solution_astar, expanded, generated = a_star(init_state, goal_state, h1)
-# if solution_greedy != None:
-#     print ("A* found a solution...")
-# else:
-#     print ("A* failed...")
-# show_solution(solution_astar, expanded, generated)
+# A* Search algorithm
+solution_astar, expanded, generated = a_star(init_state, goal_state, h1)
+if solution_greedy != None:
+    print ("A* found a solution...")
+else:
+    print ("A* failed...")
+show_solution(solution_astar, expanded, generated)
 
 #------------------------------------------------------------
 

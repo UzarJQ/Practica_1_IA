@@ -50,7 +50,7 @@ class MissionariesState:
       if movement[0] == ">":
         new_miss[0] = self.miss[0] - movement[1]
         new_miss[1] = self.miss[1] + movement[1]
-        new_cann[0] = self.cann[0] - movement[2]
+        new_cann[0] = self.cann[0] - movement[2]  
         new_cann[1] = self.cann[1] + movement[2]
         new_direction = "right"
       elif movement[0] == "<":
@@ -62,7 +62,14 @@ class MissionariesState:
       else:
         return None
       #Verificar que en ambos lados del rio no hayan mas canibales que missioneros (excepto si no hay missioneros)
-      valid_movement = (new_miss[0] >= new_cann[0] or new_miss[0] == 0) and (new_miss[1] >= new_cann[1] or new_miss[1] == 0)
+      valid_movement = (
+        (new_miss[0] >= new_cann[0] or new_miss[0] == 0) and 
+        (new_miss[1] >= new_cann[1] or new_miss[1] == 0) and 
+        new_miss[0] >= 0 and 
+        new_cann[0] >= 0 and 
+        new_miss[1] >= 0 and 
+        new_cann[1] >= 0
+      )
       if(valid_movement):
         return MissionariesState(new_miss[0], new_cann[0], new_miss[1], new_cann[1], new_direction, self.capacity)
       else:
