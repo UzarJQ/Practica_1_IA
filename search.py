@@ -157,15 +157,21 @@ def a_star(initial_state, goal_state, heuristic):
 #---------------------------------------------------------------------
 # Heuristic functions
 
-# Heuristica basada en el numero de personajes que falta por llevar al otro lado del rio
+# Heuristica basada en el numero de viajes que faltan para llevar a todos los personajes al otro lado del rio
 def h1(current_state, goal_state):
   remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
-  return remaining
+  return remaining / current_state.capacity
 
-# Heuristica basada en el numero de misioneros que falta por llevar al otro lado del rio
+# Heuristica que penaliza la desigualdad de canibales respecto a misioneros en los lados del rio y en el bote
 def h2(current_state, goal_state):
-  remaining_misionaries = abs(goal_state.miss[1] - current_state.miss[1])
-  return remaining_misionaries
+  remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
+  # Penalización por desequilibrio (si hay más caníbales que misioneros en cualquier orilla)
+  penalty = 0
+  if current_state.miss[0] > 0 and current_state.cann[0] > current_state.miss[0]:
+    penalty += 1
+  if current_state.miss[1] > 0 and current_state.cann[1] > current_state.miss[1]:
+    penalty += 1
+  return (remaining / current_state.capacity) + penalty
 
 #----------------------------------------------------------------------
 def show_solution(node, expanded, generated):
