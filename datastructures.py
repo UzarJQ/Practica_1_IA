@@ -94,7 +94,7 @@ class PriorityQueue:
         # the elements themselves (position 0 is not used)
         self.contents = [None] * (self.limit + 1)
         # a function that returns the cost of the element at position i
-        self.cost = lambda i: costFunction(self.contents[i].g)
+        self.cost = lambda i: costFunction(self.contents[i].get_cost())
         
     def contains(self, elem):
         return elem in self.contents

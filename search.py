@@ -162,7 +162,7 @@ def h1(current_state, goal_state):
   remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
   return remaining / current_state.capacity
 
-# Heuristica que penaliza la desigualdad de canibales respecto a misioneros en los lados del rio y en el bote
+# Heuristica que penaliza la desigualdad de canibales respecto a misioneros en los lados del rio
 def h2(current_state, goal_state):
   remaining = abs(goal_state.miss[1] - current_state.miss[1] + goal_state.cann[1] - current_state.cann[1])
   # Penalización por desequilibrio (si hay más caníbales que misioneros en cualquier orilla)
