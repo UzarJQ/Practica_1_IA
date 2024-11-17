@@ -3,8 +3,8 @@ from missionariesworld import MissionariesWorld
 from search import *
 
 
-init_state = MissionariesState(87, 87, 0, 0, 'left',4)
-goal_state = MissionariesState(0, 0, 87, 87, 'right',4)
+init_state = MissionariesState(45, 45, 0, 0, 'left',4)
+goal_state = MissionariesState(0, 0, 45, 45, 'right',4)
 
 # ------------------------------------------------------------
 # Validate initial and final state
